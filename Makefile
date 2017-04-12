@@ -1,11 +1,6 @@
 #!Makefile
-#这里使用hurlex的Makefile文件,很好用,感谢前辈。
-# --------------------------------------------------------
+#这里直接引用hurlex的makefile文件,很方便。在此再次感谢hurley25的文档教程。
 #
-#    hurlex 这个小内核的 Makefile
-#    默认使用的C语言编译器是 GCC、汇编语言编译器是 nasm
-#
-# --------------------------------------------------------
 #
 
 # patsubst 处理所有在 C_SOURCES 字列中的字（一列文件名），如果它的 结尾是 '.c'，就用 '.o' 把 '.c' 取代
@@ -39,12 +34,12 @@ link:
 
 .PHONY:clean
 clean:
-	$(RM) $(S_OBJECTS) $(C_OBJECTS) toyos_kernel
+	$(RM) $(S_OBJECTS) $(C_OBJECTS) hx_kernel
 
 .PHONY:update_image
 update_image:
 	sudo mount floppy.img /mnt/kernel
-	sudo cp hx_kernel /mnt/kernel/toyos_kernel
+	sudo cp toyos_kernel /mnt/kernel/hx_kernel
 	sleep 1
 	sudo umount /mnt/kernel
 
