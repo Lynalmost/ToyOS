@@ -7,16 +7,21 @@
 #include "gdt.h"
 #include "console.h"
 #include "debug.h"
+#include "idt.h"
+#include "timer.h"
 int kern_entry()
 {
 	
 	init_debug();
 	init_gdt();
+	init_idt();
 
 	console_clear();
 
 	printk_color(rc_black, rc_red, "hello os\n");
 
-	panic("test");
+	init_timer(200);
+	asm volatile ("sti");
+
 	return 0;
 }
