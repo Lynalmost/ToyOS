@@ -22,6 +22,5 @@ int kern_entry()
 
 	init_timer(200);
 	asm volatile ("sti");
-
 	return 0;
 }
