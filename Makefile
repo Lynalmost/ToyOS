@@ -63,5 +63,5 @@ bochs:
 debug:
 	qemu -S -s -fda floppy.img -boot a &
 	sleep 1
-	cgdb -x scripts/gdbinit
+	gdb -tui -x scripts/gdbinit
 
