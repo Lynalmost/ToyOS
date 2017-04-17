@@ -17,9 +17,8 @@
 
 
 //端口写一个字节
-#define outb(value, port) \
-__asm__("outb %%al, %%dx" : : "a"(value), "d"(port))
-
+#define outb(port, value) \
+__asm__ volatile("outb %%al, %%dx" : : "a"(value), "d"(port))
 //端口读一个字节
 #define inb(port)({\
 uint8_t v;\
