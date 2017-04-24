@@ -7,6 +7,7 @@
 
 #include "console.h"
 #include "io.h"
+#include "vmm.h"
 
 /*
  *内核可以通过VGA来控制屏幕上字符或图形的显示,在文本模式下,可以通过VGA控制器保留的一块内存(0x8b000~0x8bfa0)作为屏幕上字符显示的缓冲区
@@ -29,7 +30,7 @@
 #define CURSOR_LOW	0xF
 
 //VGA的显示缓冲起点为0xb8000
-static uint16_t *vga_buffer = (uint16_t *)0xB8000;
+static uint16_t *vga_buffer = (uint16_t *)(0xB8000 + PAGE_OFFSET);
 
 //光标的坐标
 static uint8_t cursor_x = 0;
