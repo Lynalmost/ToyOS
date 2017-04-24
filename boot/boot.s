@@ -29,9 +29,9 @@ MBOOT_HEADER_FLAGS		EQU		0x00000003
 MBOOT_CHECKSUM			EQU		- (MBOOT_HEADER_MAGIC + MBOOT_HEADER_FLAGS)
 
 [BITS 32]			;所有代码以32-bit的方式编译
-section .text			;声明代码段的开始位置
+section .init.text			;声明临时代码段的开始位置
 
-;在代码段的起始位置设置multiboot_header
+;在临时代码段的起始位置设置multiboot_header
 
 dd MBOOT_HEADER_MAGIC
 dd MBOOT_HEADER_FLAGS		
@@ -40,29 +40,31 @@ dd MBOOT_CHECKSUM
 ;global说明xxxx可以被其它文件调用
 ;extern说明xxxx为外部函数/变量,使用的时候在其它文件找到并使用
 [GLOBAL start]			;向外部声明内核代码入口
-[GLOBAL glb_mboot_ptr]		;向外部声明struct multiboot * 变量
+[GLOBAL mboot_ptr_tmp]		;向外部声明struct multiboot * 变量
 [EXTERN kern_entry]		;声明内核C代码的入口函数
 
 start:
-	cli			;关闭中断(因为目前还没设置好保护模式的中断处理)
-	mov esp, STACK_TOP	;设置内核栈地址
-	mov ebp, 0		;栈指针修改为0
-	and esp, 0FFFFFFF0H	;栈地址按照16字节对齐
-	mov [glb_mboot_ptr], ebx;将ebx中存储的指针存入全局变量
+	cli
+
+	mov [mboot_ptr_tmp], ebx;将ebx中的指针存入mboot_ptr_tmp
+	mov esp, STACK_TOP		;设置内核栈地址
+	and esp, 0FFFFFFF0H		;栈地址按照16字节对齐
+	mov ebp, 0 
+	
+	
 	call kern_entry		;调用内核入口函数
+
 
 stop:
 	hlt
 	jmp stop
 	
-section .bss			;未初始化的数据段从这里开始
-stack:
-    resb 32768			;这里作为内核栈
-glb_mboot_ptr:			;全局的 multiboot 结构体指针
-    resb 4
+section .init.data
 
+stack:	times 1024 db 0
 STACK_TOP equ $-stack-1		;内核栈顶，$ 符指代是当前地址
 
+mboot_ptr_tmp: dd 0			;全局的multiboot结构体指针
 
 
 
