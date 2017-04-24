@@ -9,6 +9,7 @@
 #include "io.h"
 #include "debug.h"
 #include "pmm.h"
+#include "vmm.h"
 #include "string.h"
 
 //物理页数组指针
@@ -94,7 +95,7 @@ static void phy_pages_init(map_t *mmap)
 	bzero(phy_pages, pages_mem_length);
 
 	//物理内存页管理起始地址
-	pmm_addr_start = ((uint32_t)phy_pages - KERNBASE + pages_mem_length + PMM_PAGE_SIZE) & PMM_PAGE_MASK;
+	pmm_addr_start = ((uint32_t)phy_pages - KERN_BASE + pages_mem_length + PMM_PAGE_SIZE) & PMM_PAGE_MASK;
 	for(i = 0; i < mmap->count; i++)
 	{
 		uint32_t start_addr = mmap->map[i].addr_low;
@@ -134,7 +135,6 @@ void show_memory_map()
 				(uint32_t)mmap->type);
 	}
 
-	pmm_init();
 }
 
 //通过页找到地址
