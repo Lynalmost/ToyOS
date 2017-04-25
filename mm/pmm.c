@@ -13,7 +13,7 @@
 #include "string.h"
 
 //物理页数组指针
-static page_t *phy_pages = (page_t * )((uint32_t)kern_end + KERNBASE + KVPAGE_SIZE);
+static page_t *phy_pages = (page_t * )((uint32_t)kern_end + KERN_BASE + KVPAGE_SIZE);
 
 //物理页数量
 static uint32_t phy_pages_count;
@@ -48,11 +48,8 @@ void pmm_init()
 //获取内存信息并存储在结构体中
 static void get_mem_info(map_t *mmap)
 {
-	mmap_entry_t *mmap_start_addr = (mmap_entry_t *)glb_mboot_ptr->mmap_addr;
-	mmap_entry_t *mmap_end_addr = (mmap_entry_t *)glb_mboot_ptr->mmap_addr + glb_mboot_ptr->mmap_length;
-
 	mmap_entry_t *map_array;
-	for(map_array = mmap_start_addr; map_array < mmap_end_addr; map_array ++)
+	for(map_array = (mmap_entry_t *)glb_mboot_ptr->mmap_addr; map_array < (mmap_entry_t *)glb_mboot_ptr->mmap_addr + glb_mboot_ptr->mmap_length  ; map_array ++)
 	{
 		//如果是可用区域并且起始地址是1M则满足要求,type=2的话表示当前内存块已被占用,type=3代表保留该内存块
 		if(map_array->type == 1 && map_array->base_addr_low == 0x100000)
@@ -90,12 +87,10 @@ static void phy_pages_init(map_t *mmap)
 	}
 
 	//物理页数组的总数
-	uint32_t pages_mem_length = sizeof(page_t) * (phy_mem_length / PMM_PAGE_SIZE);
-	
-	bzero(phy_pages, pages_mem_length);
+	bzero(phy_pages, sizeof(page_t) * (phy_mem_length / PMM_PAGE_SIZE));
 
 	//物理内存页管理起始地址
-	pmm_addr_start = ((uint32_t)phy_pages - KERN_BASE + pages_mem_length + PMM_PAGE_SIZE) & PMM_PAGE_MASK;
+	pmm_addr_start = ((uint32_t)phy_pages - KERN_BASE + (sizeof(page_t) * (phy_mem_length / PMM_PAGE_SIZE)) + PMM_PAGE_SIZE) & PMM_PAGE_MASK;
 	for(i = 0; i < mmap->count; i++)
 	{
 		uint32_t start_addr = mmap->map[i].addr_low;
