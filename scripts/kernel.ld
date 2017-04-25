@@ -1,8 +1,9 @@
 ENTRY(start)
 SECTIONS
 {
-		PROVIDE( kern_start = 0xC0100000 );
+
 		. = 0x100000;	/*起始的链接地址*/
+		PROVIDE( kern_start = . );
 		.init.text : 
 		{
 			*(.init.text)	/* *是通配符,意思是把所有的被链接的object文件中的.init.text段都链接进.init.text段 */
@@ -42,7 +43,7 @@ SECTIONS
 				. = ALIGN(4096);
 		}
 
-		PROVIDE( kern_end = . ); 
+		PROVIDE( kern_end = . - 0xC0000000); 
 		
 		/DISCARD/ : { *(.comment) *(.eh_frame) }																		
 }
