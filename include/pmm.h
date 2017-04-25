@@ -17,7 +17,7 @@
 #define PMM_KERN_START		0x100000
 
 //物理页大小 4KB
-#define PMM_PAGE_SIZE		0x1000
+#define PMM_PAGE_SIZE		0x1000	
 
 //按4KB对齐
 #define PMM_PAGE_MASK		0xFFFFF000
@@ -25,11 +25,6 @@
 //栈的大小
 #define STACK_SIZE			0x1000
 
-//内核起始虚拟地址
-#define KERNBASE			0xC0000000
-
-//内核页表大小
-#define KVPAGE_SIZE			0x400000
 
 //最大内存页块大小,即2^10=1024
 //范围是2^0~2^10
