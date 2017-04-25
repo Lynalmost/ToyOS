@@ -17,7 +17,6 @@ multiboot_t *glb_mboot_ptr;
 //开启分页机制后的内核栈
 int8_t kern_stack[STACK_SIZE]; 
 
-uint32_t kern_stack_top = ((uint32_t)kern_stack + STACK_SIZE); 
 //内核栈的栈顶
 
 //__attribute__((section("")))的作用是指定变量或函数的存储区段
@@ -33,9 +32,14 @@ __attribute__((section(".init.text"))) void kern_entry()
 {
 	uint32_t cr0;
 	pgd_tmp[0] = (uint32_t)pte_low | PAGE_PRESENT | PAGE_WRITE;
-	pgd_tmp[PGD_INDEX(PAGE_OFFSET)] = (uint32_t)pte_high | PAGE_PRESENT | PAGE_WRITE;
 	int i;
-	//将内核虚拟地址4MB映射到物理地址的前4MB中
+
+	for( i = 0; i < 4; i++) 
+	{
+		uint32_t pgd_idx = PGD_INDEX(PAGE_OFFSET + PAGE_MAP_SIZE * i);
+		pgd_tmp[pgd_idx] = ((uint32_t)pte_high + PAGE_SIZE * i) | PAGE_PRESENT | PAGE_WRITE;
+	}
+	//将内核虚 地址4MB映射到物理地址的前4MB中
 	//因为.init.data的代码肯定不会超过物理地址的前4MB
 	for(i = 0; i < 1024; i++)
 	{
@@ -56,6 +60,7 @@ __attribute__((section(".init.text"))) void kern_entry()
 	//cr0寄存器的最高位置1,代表分页开启
 	cr0 |= 0x80000000;
 	asm volatile("mov %0, %%cr0" : : "r" (cr0));
+	uint32_t kern_stack_top = ((uint32_t)kern_stack + STACK_SIZE) & 0xFFFFFFF0; 
 	//切换临时栈到新栈
 	asm volatile("mov %0, %%esp\n\t"
 			"xor %%ebp, %%ebp" : : "r" (kern_stack_top));
@@ -83,8 +88,8 @@ int kern_init()
 	printk("kernel in memory end:   0x%08X\n", kern_end);
 	printk("kernel in memory used:   %d KB\n\n", (kern_end - kern_start + 1023) / 1024);
 
-	init_vmm();
 	show_memory_map();
 	pmm_init();
+	init_vmm();
 	return 0;
 }
