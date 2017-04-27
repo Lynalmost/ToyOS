@@ -197,7 +197,7 @@ static inline void list_splice_tail_init(struct list_head *list, struct list_hea
 #define list_first_entry(ptr, type, member) \
 	list_entry((ptr)->next, type, member)
 
-#define __list_for_each(pos, head) \
+#define list_for_each(pos, head) \
 	for (pos = (head)->next; pos != head; pos = pos->next)
 
 #define list_for_each_safe(pos, n, head) \
