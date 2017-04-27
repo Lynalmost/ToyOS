@@ -1,5 +1,5 @@
 /*************************************************************************
-  > File Name: entry.c
+  > File Name: main.c
   > Author: Ukey
   > Mail: gsl110809@gmail.com
   > Created Time: 2017年04月11日 星期二 21时42分47秒
@@ -11,6 +11,7 @@
 #include "timer.h"
 #include "pmm.h"
 #include "vmm.h"
+#include "kalloc.h"
 //开启分页机制之后的multiboot指针
 multiboot_t *glb_mboot_ptr;
 
@@ -91,5 +92,6 @@ int kern_init()
 	show_memory_map();
 	pmm_init();
 	init_vmm();
+	alloc_init();
 	return 0;
 }
