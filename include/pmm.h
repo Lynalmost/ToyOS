@@ -34,6 +34,7 @@
 extern uint8_t kern_start[];
 extern uint8_t kern_end[];
 
+extern uint32_t kern_stack_top;
 //bios获取获取内存信息其实是通过int 0x15 ax = 0xe820中断实现的
 //这个结构体集合了mmap_entry_t数组和数组的个数,便于管理,并没有新增什么东西,关于mmap_entry_t,是在multiboot.h文件中定义的
 
