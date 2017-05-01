@@ -12,12 +12,14 @@
 #include "pmm.h"
 #include "vmm.h"
 #include "kalloc.h"
+#include "sched.h"
 //开启分页机制之后的multiboot指针
 multiboot_t *glb_mboot_ptr;
 
 //开启分页机制后的内核栈
 int8_t kern_stack[STACK_SIZE]; 
 
+uint32_t kern_stack_top;
 //内核栈的栈顶
 
 //__attribute__((section("")))的作用是指定变量或函数的存储区段
@@ -26,6 +28,7 @@ int8_t kern_stack[STACK_SIZE];
 __attribute__((section(".init.data"))) pgd_t *pgd_tmp  = (pgd_t *)0x1000;
 __attribute__((section(".init.data"))) pgd_t *pte_low  = (pgd_t *)0x2000;
 __attribute__((section(".init.data"))) pgd_t *pte_high = (pgd_t *)0x3000;
+
 
 static int kern_init();
 //入口函数
@@ -61,7 +64,7 @@ __attribute__((section(".init.text"))) void kern_entry()
 	//cr0寄存器的最高位置1,代表分页开启
 	cr0 |= 0x80000000;
 	asm volatile("mov %0, %%cr0" : : "r" (cr0));
-	uint32_t kern_stack_top = ((uint32_t)kern_stack + STACK_SIZE) & 0xFFFFFFF0; 
+	kern_stack_top = ((uint32_t)kern_stack + STACK_SIZE) & 0xFFFFFFF0; 
 	//切换临时栈到新栈
 	asm volatile("mov %0, %%esp\n\t"
 			"xor %%ebp, %%ebp" : : "r" (kern_stack_top));
@@ -93,5 +96,7 @@ int kern_init()
 	pmm_init();
 	init_vmm();
 	alloc_init();
+	sched_init();
+	
 	return 0;
 }
