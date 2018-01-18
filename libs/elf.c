@@ -18,7 +18,7 @@ elf_t elf_from_multiboot(multiboot_t *mb)
 			elf.strtabsz = sh[i].size;
 		}
 		if (strcmp(name, ".symtab") == 0) {
-			elf.symtab = (elf_symbol_t*)sh[i].addr + PAGE_OFFSET;
+			elf.symtab = (elf_symbol_t*)(sh[i].addr + PAGE_OFFSET);
 			elf.symtabsz = sh[i].size;
 		}
 	}
