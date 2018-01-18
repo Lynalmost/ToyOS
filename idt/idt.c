@@ -78,7 +78,7 @@ void isr_handler(pt_regs_t *regs)
 	}
 	else 
 	{
-		printk_color(rc_black, rc_blue, "Unhandled interrupt: %d\n", regs->int_num);
+		//printk_color(rc_black, rc_blue, "Unhandled interrupt: %d\n", regs->int_num);
 	}
 }
 
@@ -100,7 +100,6 @@ void irq_handler(pt_regs_t *regs)
 void register_interrupt_handler(uint8_t n, interrupt_handler_t h)
 {
 	interrupt_handlers[n] = h;
-	printk_color(rc_black, rc_red, "test1\n");
 }
 
 static void init_chip()
