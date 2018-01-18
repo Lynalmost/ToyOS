@@ -10,7 +10,10 @@ switch_to:
 		mov [eax + 12], esi
 		mov [eax + 16], edi
 		pushf
+		pop ecx
 		mov [eax + 20], ecx
+
+		mov eax, [esp + 8]
 
 		mov esp, [eax+0]
 		mov ebp, [eax+4]
