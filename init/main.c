@@ -74,7 +74,20 @@ __attribute__((section(".init.text"))) void kern_entry()
 
 	//调用内核初始化函数
 	kern_init();
+	return ;
 }
+
+//线程测试函数
+int thread(void *arg)
+{
+	while (1) {
+		printk_color(rc_black, rc_blue, "this is a new thread\n");
+		int count = 100000000;
+		while(count--);
+	}
+}
+
+
 int kern_init()
 {
 
@@ -98,5 +111,16 @@ int kern_init()
 	alloc_init();
 	sched_init();
 	
+	//新建一个线程
+	kernel_thread(thread, NULL);
+
+	//开启中断
+	asm volatile ("sti");
+
+	while (1) {
+		printk_color(rc_black, rc_red, "this is main thread\n");
+		int count = 100000000;
+		while(count--);
+	}
 	return 0;
 }
