@@ -1,5 +1,4 @@
 #!Makefile
-#这里直接引用hurlex的makefile文件,很方便。在此再次感谢hurley25的文档教程。
 #
 #
 
@@ -21,47 +20,38 @@ all: $(S_OBJECTS) $(C_OBJECTS) link update_image
 
 # The automatic variable `$<' is just the first prerequisite
 .c.o:
-	@echo 编译代码文件 $< ...
 	$(CC) $(C_FLAGS) $< -o $@
 
 .s.o:
-	@echo 编译汇编文件 $< ...
 	$(ASM) $(ASM_FLAGS) $<
 
 link:
-	@echo 链接内核文件...
 	$(LD) $(LD_FLAGS) $(S_OBJECTS) $(C_OBJECTS) -o toyos_kernel
 
 .PHONY:clean
 clean:
-	$(RM) $(S_OBJECTS) $(C_OBJECTS) hx_kernel
+	@$(RM) $(S_OBJECTS) $(C_OBJECTS) hx_kernel
 
 .PHONY:update_image
 update_image:
-	sudo mount floppy.img /mnt/kernel
-	sudo cp toyos_kernel /mnt/kernel/hx_kernel
-	sleep 1
-	sudo umount /mnt/kernel
+	mount floppy.img /mnt/kernel
+	cp toyos_kernel /mnt/kernel/hx_kernel
+	umount /mnt/kernel
 
 .PHONY:mount_image
 mount_image:
-	sudo mount floppy.img /mnt/kernel
+	@mount floppy.img /mnt/kernel
 
 .PHONY:umount_image
 umount_image:
-	sudo umount /mnt/kernel
+	@umount /mnt/kernel
 
 .PHONY:qemu
 qemu:
-	qemu -fda floppy.img -boot a
-
-.PHONY:bochs
-bochs:
-	bochs -f scripts/bochsrc.txt
+	@qemu -fda floppy.img -boot a
 
 .PHONY:debug
 debug:
-	qemu -S -s -fda floppy.img -boot a &
-	sleep 1
-	gdb -tui -x scripts/gdbinit
+	@qemu -S -s -fda floppy.img -boot a &
+	@gdb -tui -x scripts/gdbinit
 
