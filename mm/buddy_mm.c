@@ -249,12 +249,12 @@ static void test()
 	printk_order_info();
 	
 	page[0] = buddy_alloc_pages(1);
-	buddy_free_pages(page[0], 1);
+	//buddy_free_pages(page[0], 1);
 	printk("after alloc 1:\n");
 	printk_order_info();
 	
 	page[1] = buddy_alloc_pages(680);
-	buddy_free_pages(page[1], 680);
+	//buddy_free_pages(page[1], 680);
 	printk("after alloc 680:\n");
 	printk_order_info();
 }
